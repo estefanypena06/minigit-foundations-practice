@@ -1,11 +1,3 @@
-// Exercise 7: turn free functions into a class.
-//
-// In HW8 every function took the root as a parameter:
-//     metadataDirectory(root)      headFile(root)
-// A class can store the root ONCE, in a member variable, so the member
-// functions need no parameter:
-//     RepoLayout layout("course/repo");
-//     layout.metadataDirectory()   layout.headFile()
 #include <filesystem>
 #include <iostream>
 #include <string>
@@ -31,31 +23,22 @@ private:
     fs::path root_;                              // the stored root
 };
 
-// ---------------------------------------------------------------------
-// The DEFINITIONS (normally in a .cpp file). Each starts with RepoLayout::
-// TODO: replace each body.
-
-// Hint: use a member initializer list:  : root_(root) { }
-RepoLayout::RepoLayout(const fs::path& root) {
-    (void)root;
+RepoLayout::RepoLayout(const fs::path& root) : root_(root) {
 }
 
-// Hint: return the member variable.
+
 const fs::path& RepoLayout::root() const {
     return root_;
 }
 
-// Hint: same as HW8, but use root_ instead of a parameter.
 fs::path RepoLayout::metadataDirectory() const {
-    return {};
+    return root_ / ".minigit";
 }
 
-// Hint: reuse metadataDirectory().
 fs::path RepoLayout::headFile() const {
-    return {};
+    return metadataDirectory() / "HEAD";
 }
 
-// ---------------------------------------------------------------------
 int main() {
     const RepoLayout layout("course/repo");   // a const object: only const member functions can be called
     check(layout.root() == "course/repo", "constructor stores the root");
