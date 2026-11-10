@@ -1,7 +1,3 @@
-// Exercise 8: report errors with an exception instead of bool + message.
-//
-// HW8 style:   bool readTextFile(file, text, errorMessage);   // caller checks the bool
-// New style:   std::string readOrThrow(file);                  // caller uses try / catch
 #include <chrono>
 #include <filesystem>
 #include <fstream>
@@ -18,22 +14,23 @@ void check(bool condition, const std::string& message) {
     if (!condition) ++failures;
 }
 
-// TODO: return every character of the file.
-// If the file cannot be opened, throw std::runtime_error with a message that
-// contains the file name, for example:
-//     throw std::runtime_error("Cannot open file: " + file.string());
-// Hint: the reading part is the same as HW8's readTextFile.
 std::string readOrThrow(const fs::path& file) {
-    (void)file;
-    return "";   // replace this line
+    std::ifstream input(file, std::ios::binary);
+    if (!input) {
+        throw std::runtime_error("Cannot open file: " + file.string());
+}
+    std::ostringstream contents;
+    contents << input.rdbuf();
+    return contents.str();
 }
 
-// TODO: call readOrThrow(file) inside a try block and return its text.
-// In the catch block, catch const std::runtime_error& error,
-// print "Sorry: " followed by error.what(), and return "".
 std::string readOrDefault(const fs::path& file) {
-    (void)file;
-    return "not written yet";   // replace this function body
+     try {
+        return readOrThrow(file);
+    } catch (const std::runtime_error& error) {
+        std::cout << "Sorry: " << error.what() << '\n';
+        return "";
+    }
 }
 
 int main() {
